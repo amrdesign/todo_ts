@@ -1,32 +1,45 @@
-import { createRouter, createRoute,Outlet, createRootRoute, Link } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { createRouter, createRoute, createRootRoute, Link, useNavigate } from '@tanstack/react-router';
 import { createProtectedRoute } from '../features/auth/ProtectedRoute';
-import {useAuthStore} from "@/features/auth/store.ts";
+
+import LoginForm from "@/features/auth/ui/loginForm.tsx";
+
+
+
+import { useAuthStore } from "@/features/auth/store";
+import NavMenu from "@/shared/ui/navMenu.tsx";
+
+function DashboardPage() {
+    const navigate = useNavigate();
+
+    return (
+        <div className="space-y-4">
+            <h1 className="text-2xl font-bold">📊 Dashboard</h1>
+            <p className="text-muted-foreground">
+                دي صفحة محمية. لو مش مسجل دخول، هتترجع لـ login تلقائياً.
+            </p>
+
+            <button
+                onClick={() => {
+                    useAuthStore.getState().logout();
+                    navigate({ to: '/login' });
+                }}
+                className="px-4 py-2 bg-red-500 text-white rounded"
+            >
+                Logout
+            </button>
+
+            <Link to="/" className="text-primary hover:underline">
+                ← رجّع للـ Home
+            </Link>
+        </div>
+    );
+}
+
 
 
 // 1. Root Route (اللي هيشوفه كل الـ Pages)
 const rootRoute =  createRootRoute({
-    component: () => (
-        <>
-            <div className="min-h-screen bg-background">
-                <nav className="border-b p-4">
-                    <Link to="/" className="mr-4 hover:underline">Home</Link>
-                    <Link to="/login" className="mr-4 hover:underline">Login</Link>
-                    <Link to="/register" className="mr-4 hover:underline">Register</Link>
-                    <Link to="/dashboard" className="hover:underline text-primary">
-                        Dashboard (Protected)
-                    </Link>
-                </nav>
-                <main className="p-4">
-                    {/* هنا بيتحط محتوى الصفحة */}
-                    <Outlet />
-
-                </main>
-            </div>
-            <TanStackRouterDevtools position="bottom-right" />
-
-        </>
-    ),
+    component: NavMenu,
 });
 
 // 2. تعريف المسارات الأساسية
@@ -39,7 +52,7 @@ const indexRoute = createRoute({
 const loginRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/login',
-    component: () => <div className="text-2xl font-bold">🔐 Login Page</div>,
+    component: LoginForm,
 });
 
 const registerRoute = createRoute({
@@ -52,25 +65,7 @@ const registerRoute = createRoute({
 const dashboardRoute = createProtectedRoute(
     () => rootRoute,
     '/dashboard',
-    () => (
-        <div className="space-y-4">
-            <h1 className="text-2xl font-bold">📊 Dashboard</h1>
-            <p className="text-muted-foreground">
-                دي صفحة محمية. لو مش مسجل دخول، هتترجع لـ login تلقائياً.
-            </p>
-
-            <button
-                onClick={() => useAuthStore.getState().clearAuth()}
-                className="px-4 py-2 bg-red-500 text-white rounded"
-            >
-                Logout
-            </button>
-
-            <Link to="/" className="text-primary hover:underline">
-                ← رجّع للـ Home
-            </Link>
-        </div>
-    )
+    DashboardPage
 );
 
 // 3. تجميع الـ Routes

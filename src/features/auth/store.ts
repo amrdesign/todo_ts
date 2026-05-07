@@ -1,49 +1,42 @@
-import {create} from 'zustand';
-import {persist} from 'zustand/middleware';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type {User} from "@/features/auth/api.ts";
 
-interface User {
-    id: number;
-    name: string;
-    email: string;
-}
 
 interface AuthState {
-    token: string | null;
     user: User | null;
-    setAuth: (token: string, user: User) => void;
-    clearAuth: () => void;
+    token: string | null; // لو الـ Backend بيبعت توكن
+    isAuthenticated: boolean;
+
+    // Actions
+    setUser: (user: User | null) => void;
+    setToken: (token: string | null) => void;
+    login: (user: User, token?: string) => void;
+    logout: () => void;
 }
-
-// في المتصفح console:
-
 
 export const useAuthStore = create<AuthState>()(
     persist(
         (set) => ({
-            token: null,
             user: null,
-            setAuth: (token, user) => set({token, user}),
-            clearAuth: () => set({token: null, user: null}),
+            token: null,
+            isAuthenticated: false,
+
+            setUser: (user) => set({ user, isAuthenticated: !!user }),
+            setToken: (token) => set({ token }),
+
+            login: (user, token) => set({
+                user,
+                token: token ?? null,
+                isAuthenticated: true
+            }),
+
+            logout: () => set({ user: null, token: null, isAuthenticated: false }),
         }),
-        {name: 'todo-auth'}
+        {
+            name: 'todo-auth',
+            // نحفظ الـ token بس في الـ storage (الـ user ممكن يتغير من الـ API)
+            partialize: (state) => ({ token: state.token }),
+        }
     )
 );
-
-
-function testAuth(login: boolean) {
-
-
-    if (login) {
-        useAuthStore.getState().setAuth('test-token', {
-            id: 1,
-            name: 'Amr',
-            email: 'amr@test.com'
-        });
-    } else {
-        useAuthStore.getState().clearAuth();
-    }
-
-}
-
-
-testAuth(true);
