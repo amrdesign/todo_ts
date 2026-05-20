@@ -1,39 +1,15 @@
-import { createRouter, createRoute, createRootRoute, Link, useNavigate } from '@tanstack/react-router';
+import { createRouter, createRoute, createRootRoute} from '@tanstack/react-router';
 import { createProtectedRoute } from '../features/auth/ProtectedRoute';
 
 import LoginForm from "@/features/auth/ui/loginForm.tsx";
 
 
 
-import { useAuthStore } from "@/features/auth/store";
+import {DashBoardPage} from  "@/shared/ui/dashBoardPage.tsx"
 import NavMenu from "@/shared/ui/navMenu.tsx";
+import {HomePage} from "@/features/home/HomePage.tsx";
 
-function DashboardPage() {
-    const navigate = useNavigate();
 
-    return (
-        <div className="space-y-4">
-            <h1 className="text-2xl font-bold">📊 Dashboard</h1>
-            <p className="text-muted-foreground">
-                دي صفحة محمية. لو مش مسجل دخول، هتترجع لـ login تلقائياً.
-            </p>
-
-            <button
-                onClick={() => {
-                    useAuthStore.getState().logout();
-                    navigate({ to: '/login' });
-                }}
-                className="px-4 py-2 bg-red-500 text-white rounded"
-            >
-                Logout
-            </button>
-
-            <Link to="/" className="text-primary hover:underline">
-                ← رجّع للـ Home
-            </Link>
-        </div>
-    );
-}
 
 
 
@@ -46,7 +22,7 @@ const rootRoute =  createRootRoute({
 const indexRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/',
-    component: () => <div className="text-2xl font-bold text-black">🏠 Home Page</div>,
+    component: () => <HomePage/>,
 });
 
 const loginRoute = createRoute({
@@ -65,7 +41,7 @@ const registerRoute = createRoute({
 const dashboardRoute = createProtectedRoute(
     () => rootRoute,
     '/dashboard',
-    DashboardPage
+    DashBoardPage
 );
 
 // 3. تجميع الـ Routes

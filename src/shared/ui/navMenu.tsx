@@ -10,12 +10,23 @@ function NavMenu() {
             <>
                 <div className="min-h-screen bg-background">
                     <nav className="border-b p-4">
-                        <Link to="/" className="mr-4 hover:underline">Home</Link>
+                        <Link
+                            to="/"
+                            viewTransition
+
+                            className="mr-4 hover:underline">Home</Link>
 
                         {!token && (
                             <>
-                                <Link to="/login" className="mr-4 hover:underline">Login</Link>
-                                <Link to="/register" className="mr-4 hover:underline">Register</Link>
+                                <Link to="/login"
+
+                                      viewTransition
+
+                                      className="mr-4 hover:underline">Login</Link>
+                                <Link
+                                    viewTransition
+
+                                    to="/register" className="mr-4 hover:underline">Register</Link>
                             </>
                         )}
 

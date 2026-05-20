@@ -22,7 +22,9 @@
 
 
     /* add Alias */
+/*
     "baseUrl": ".",
+*/
     "paths": {
       "@/*": ["./src/*"]
     }

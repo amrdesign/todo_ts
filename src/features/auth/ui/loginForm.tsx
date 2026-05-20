@@ -33,7 +33,7 @@ const formSchema = z.object({
 })
 function LoginForm(){
     const setPreLoading = usePreLoading((s) => s.setShow);
-    const { mutate, isPending, error } = useLogin();
+    const { mutateAsync, isPending, error } = useLogin();
 
 
 
@@ -48,13 +48,13 @@ function LoginForm(){
         },
         onSubmit: async ({ value }) => {
 
-
+            setPreLoading(true);
 
             try {
-                setPreLoading(true);
 
 
-                mutate({
+
+                await mutateAsync({
                     email: value.email.trim(),
                     password: value.password,
                 });

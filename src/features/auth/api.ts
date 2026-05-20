@@ -32,16 +32,17 @@ export const authApi = {
     login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
         // نطلب الـ CSRF الأول (لو الـ Backend محتاجه)
         await authApi.getCsrfCookie();
+        console.log(document.cookie);
 
-        const response = await api.post<AuthResponse>('/api/login', credentials);
+        const response = await api.post<AuthResponse>('/front/login', credentials);
         return response.data;
     },
 
     // 3. جلب بيانات المستخدم الحالي
-    getCurrentUser: () => api.get<User>('/api/user'),
+    getCurrentUser: () => api.get<User>('/front/me'),
 
     // 4. تسجيل الخروج
-    logout: () => api.post('/api/logout'),
+    logout: () => api.post('/front/logout'),
 };
 
 

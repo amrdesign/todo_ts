@@ -23,7 +23,9 @@
     "strict": true,
 
     /* add Alias */
+/*
     "baseUrl": ".",
+*/
     "paths": {
       "@/*": ["./src/*"]
     }
